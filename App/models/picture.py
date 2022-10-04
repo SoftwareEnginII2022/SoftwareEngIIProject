@@ -16,7 +16,7 @@ class Picture(db.Model):
         self.url = url
         self.likes = likes
         self.dislikes = dislikes,
-        self.tierPoints= tierPointstierPointstierPointstierPointstierPointstierPointstierPointstierPoints
+        self.tierPoints= tierPoints
 
     def toJSON(self):
         return{
