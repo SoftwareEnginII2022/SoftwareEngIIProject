@@ -19,7 +19,7 @@ class Picture_Details(db.Model):
     def toggle_status(self):
         if self.status is Status.Like :
             self.status = Status.Dislike
-        else
+        else:
             self.status = Status.Like
     def toJSON(self):
         return {
