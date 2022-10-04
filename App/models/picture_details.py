@@ -16,11 +16,12 @@ class Picture_Details(db.Model):
         self.picture_id = picture_id
         self.user_id = user_id
 
-    def toggle_status(self):
-        if self.status is Status.Like:
-            self.status = Status.Dislike
-        else:
-            self.status = Status.Like
+    def like(self):
+        self.status = Status.Like
+
+    def dislike(self):
+        self.status = Status.Dislike
+        
     def toJSON(self):
         return {
             'id':self.id,
