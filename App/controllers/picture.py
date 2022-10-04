@@ -21,3 +21,15 @@ def likePicture(picture_id, user_id):
         return picture
     pic_Details = create_Picture_Details(picture_id, user_id, "Like")
     return picture
+
+def dislikePicture(picture_id, user_id):
+    picture = get_Picture(picture_id)
+    if not picture: 
+        return[]
+    pic_Details = Picture_Details.query.filter_by(picture_id=picture_id, user_id=user_id).first()
+    if pic_Details:                                   
+        pic_Details.dislike()
+        return picture
+    pic_Details = create_Picture_Details(picture_id, user_id, "Dislike")
+    return picture
+
