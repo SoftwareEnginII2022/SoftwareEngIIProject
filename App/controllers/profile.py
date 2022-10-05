@@ -12,7 +12,7 @@ def get_all_profiles():
 def get_all_profiles_JSON():
     profiles = get_all_profiles()
     if not profiles:
-        returnp []
+        return []
     profiles = [profile.toJSON() for profile in profiles]
     return profiles
 
