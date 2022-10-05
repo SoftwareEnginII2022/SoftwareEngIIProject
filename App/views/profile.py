@@ -13,7 +13,7 @@ def view_profile(id):
     user = get_profile(id)
     if user  is []:
         return jsonify({'Message':'User does not exist'},404)
-    return jsonify({'user':User}, 200)
+    return jsonify({'user':user.toJSON()}, 200)
 
 @profile_views.route('/profile/<id>/rate',methods=['POST'])
 @jwt_required()
