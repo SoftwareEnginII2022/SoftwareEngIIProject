@@ -29,13 +29,13 @@ def like_picture(id):
 def upload_picture():
     profile_id = request.json.get('profile_id')
     url = request.json.get('url')
-    picture = upload_Picture(current_identity.id, profile_id, url, 0, 0, 0 )
+    picture = upload_Picture(user_id = current_identity.id, profile_id = profile_id, url = url, likes= 0, dislikes= 0)
 
     if picture is []:
         return jsonify({'Message':'An error has occured'}, 400)
     return jsonify({'picture':picture.toJSON()}, 201)
 
-    
+
 
     
 
