@@ -14,7 +14,7 @@ def view_profile(id):
         return jsonify({'Message':'User does not exist'},404)
     return jsonify({'user':User}, 200)
 
-@profile_views.route('/profile/<id>/rate',method=['POST'])
+@profile_views.route('/profile/rate/<id>',method=['POST'])
 @jwt_required()
 def rank_profile(id):
     ranking = request.json.get('ranking')
