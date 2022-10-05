@@ -26,7 +26,8 @@ class Picture_Details(db.Model):
         return {
             'id':self.id,
             'picture_id':self.picture_id,
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            'Status': self.status.name
         }
     
         

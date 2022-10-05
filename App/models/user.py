@@ -23,7 +23,7 @@ class User(db.Model):
             'username': self.username,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'pictures': [self.Picture.toJSON()]
+            'pictures': [p.toJSON for p in self.Picture]
         }
 
     def set_password(self, password):

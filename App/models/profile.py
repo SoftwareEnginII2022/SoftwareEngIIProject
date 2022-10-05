@@ -2,14 +2,16 @@ from App.database import db
 
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer,nullable= False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    rating = db.Column(db.Integer, nullable = False, default= 0)
     tier = db.Column(db.Integer,nullable= False)
     view_count = db.Column(db.Integer,nullable= False, default= 0)
     first_view_date = db.Column(db.Date, nullable= False)
     db.relationship('Picture', backref='profile', lazy=True, cascade="all, delete-orphan")
     
-    def __init__(self,user_id, tier, view_count, first_view_date):
+    def __init__(self,user_id, rating, tier, view_count, first_view_date):
         self.user_id = user_id
+        self.rating = rating
         self.tier = tier
         self.view_count = view_count
         self.first_view_date = first_view_date
