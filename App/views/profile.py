@@ -28,6 +28,8 @@ def rank_profile(id):
 @profile_views.route('/profile/popular', methods=['GET'])
 def view_top_ten():
     profiles = get_top_ten()
+    if not profiles:
+        return jsonify({'Message': 'No popular profiles available. Rate some today!'})
     profiles = [profile.toJSON() for profile in profiles]
     return jsonify({"profiles":profiles},200)
 

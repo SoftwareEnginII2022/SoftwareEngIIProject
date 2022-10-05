@@ -18,7 +18,7 @@ def retrieve_picture(id):
 
 @picture_views.route('/picture/like/<int:id>', methods=['POST'])
 @jwt_required()
-def like_picture(id):
+def like_picture_action(id):
     picture = like_picture(id,current_identity.id)
     if not picture:
         return jsonify({"Message":"Picture was not found "},404)
@@ -26,10 +26,10 @@ def like_picture(id):
     
 @picture_views.route('/picture/upload', methods=['POST'])
 @jwt_required()
-def upload_picture():
+def upload_picture_action():
     profile_id = request.json.get('profile_id')
     picture_url = request.json.get('picture_url')
-    picture = upload_picture(user_id = current_identity.id,profile_id =profile_id, url = picture_url)
+    picture = upload_picture(user_id = current_identity.id, profile_id =current_identity.id, url = picture_url)
 
     if not picture:
         return jsonify({'Message':'An error has occured'}, 400)
