@@ -20,6 +20,7 @@ class Profile(db.Model):
         return {
             'id':self.id,
             'user_id': self.user_id,
+            'rating':self.rating,
             'tier':self.tier,
             'view_count':self.view_count,
             'first_view_date':self.first_view_date

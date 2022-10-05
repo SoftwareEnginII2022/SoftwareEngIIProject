@@ -12,7 +12,7 @@ def get_all_profiles():
 def get_all_profiles_JSON():
     profiles = get_all_profiles()
     if not profiles:
-        return []
+        returnp []
     profiles = [profile.toJSON() for profile in profiles]
     return profiles
 
@@ -28,14 +28,18 @@ def get_profile_JSON(id):
         return []
     return profile.toJSON()
 
+def getTopTen():
+    profiles = Profile.query.order_by(Profile.rating.desc()).limit(10)
+    if not profiles:
+        return []
+    return [p.toJSON() for p in profiles]
+
 def create_profile(user_id,rating,tier,view_count,first_view_date):
         newProfile = Profile(user_id,rating,tier,view_count,first_view_date)
         db.session.add(newProfile)
         db.session.commit()
         return newProfile
     
-     
-
 def rate_profile(profile_id, rating):
     profile = get_profile(profile_id)
     if not profile:
