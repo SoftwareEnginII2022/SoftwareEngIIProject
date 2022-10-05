@@ -29,6 +29,7 @@ def signup():
     password = request.json.get('password')
     first_name= request.json.get ('first_name')
     last_name = request.json.get ('last_name')
+
     user = create_user(username, password,first_name,last_name)
 
     if user is []:
