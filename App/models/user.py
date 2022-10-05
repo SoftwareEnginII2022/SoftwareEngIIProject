@@ -7,7 +7,7 @@ class User(db.Model):
     password = db.Column(db.String(120), nullable=False)
     first_name = db.Column(db.String(40), nullable= False)
     last_name = db.Column(db.String(40), nullable = False)
-    db.relationship('Profile', backref='user', lazy=True, cascade="all, delete-orphan")
+    Profile = db.relationship('Profile', backref='user', lazy=True, cascade="all, delete-orphan")
     Picture = db.relationship('Picture', backref='user', lazy=True, cascade="all, delete-orphan")
     db.relationship('Picture_Details', backref='user', lazy=True, cascade="all, delete-orphan")
 
@@ -23,7 +23,8 @@ class User(db.Model):
             'username': self.username,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'pictures': [p.toJSON for p in self.Picture]
+            'pictures': [p.toJSON() for p in self.Picture],
+            'profile': [p.toJSON() for p in self.Profile]
         }
 
     def set_password(self, password):

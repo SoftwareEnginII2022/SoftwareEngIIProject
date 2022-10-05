@@ -33,7 +33,7 @@ def signup():
 
     if user is []:
         return jsonify({'message': 'An error has occurred or user already exist'},400)
-    profile = create_profile(user.id,0,0,date(1970,1,1))
+    profile = create_profile(user.id,0,0,0,date(1970,1,1))
     return ({'Message':'user created'}, 201)
 
 @user_views.route('/static/users')

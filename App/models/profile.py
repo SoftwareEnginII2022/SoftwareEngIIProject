@@ -18,6 +18,7 @@ class Profile(db.Model):
 
     def toJSON(self):
         return {
+            'id':self.id,
             'user_id': self.user_id,
             'tier':self.tier,
             'view_count':self.view_count,

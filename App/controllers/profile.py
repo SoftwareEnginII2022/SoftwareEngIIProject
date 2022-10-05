@@ -1,4 +1,5 @@
 from App.models import Profile
+import sqlalchemy 
 from sqlalchemy.exc import SQLAlchemyError
 from App.database import db
 
@@ -27,14 +28,12 @@ def get_profile_JSON(id):
         return []
     return profile.toJSON()
 
-def create_profile(user_id,tier,view_count,first_view_date):
-    try:
-        newProfile = Profile(user_id,tier,view_count,first_view_date)
+def create_profile(user_id,rating,tier,view_count,first_view_date):
+        newProfile = Profile(user_id,rating,tier,view_count,first_view_date)
         db.session.add(newProfile)
         db.session.commit()
         return newProfile
-    except sqlalchemy.exc.SQLAlchemyError:
-        db.session.rollback()
+    
      
 
 def rate_profile(profile_id, rating):
