@@ -1,27 +1,27 @@
 from App.database import db
+from datetime import date
 
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     rating = db.Column(db.Integer, nullable = False, default= 0)
-    tier = db.Column(db.Integer,nullable= False)
+    tier = db.Column(db.Integer,nullable= False, default= 0)
     view_count = db.Column(db.Integer,nullable= False, default= 0)
-    first_view_date = db.Column(db.Date, nullable= False)
+    first_view_date = db.Column(db.Date, nullable= False, default= date(1970,1,1))
     db.relationship('Picture', backref='profile', lazy=True, cascade="all, delete-orphan")
     
-    def __init__(self,user_id, rating, tier, view_count, first_view_date):
+    def __init__(self,user_id):
         self.user_id = user_id
-        self.rating = rating
-        self.tier = tier
-        self.view_count = view_count
-        self.first_view_date = first_view_date
+    
+    def get_tier(self):
+        return ("Bronze", "Gold", "Platinum", "Diamond")[self.tier]
 
     def toJSON(self):
         return {
             'id':self.id,
             'user_id': self.user_id,
             'rating': self.rating,
-            'tier':self.tier,
+            'tier':self.get_tier(),
             'view_count':self.view_count,
             'first_view_date':self.first_view_date
         } 

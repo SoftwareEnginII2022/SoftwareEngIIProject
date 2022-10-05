@@ -9,12 +9,12 @@ class Picture(db.Model):
     dislikes = db.Column(db.Integer, nullable= False, default=0)
     db.relationship('Picture_Details', backref='picture', lazy=True, cascade="all, delete-orphan")
 
-    def __init__(self, user_id, profile_id, url, likes, dislikes):
+    def __init__(self, user_id, profile_id, url):
         self.user_id = user_id
         self.profile_id = profile_id
         self.url = url
-        self.likes = likes
-        self.dislikes = dislikes
+        self.likes = 0
+        self.dislikes = 0
 
     def toJSON(self):
         return{

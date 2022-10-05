@@ -4,14 +4,15 @@ from flask_jwt import jwt_required,current_identity
 from  App.controllers import (
     get_profile,
     rate_profile,
-    get_top_ten
+    get_top_ten,
+    browse_viewable_profiles
 )
 profile_views = Blueprint('profile_views', __name__, template_folder='../template' )
 
 @profile_views.route('/profile/view/<id>',methods=['GET'])
 def view_profile(id):
     user = get_profile(id)
-    if user  is []:
+    if not user:
         return jsonify({'Message':'User does not exist'},404)
     return jsonify({'user':user.toJSON()}, 200)
 
@@ -20,10 +21,22 @@ def view_profile(id):
 def rank_profile(id):
     ranking = request.json.get('ranking')
     profile = rate_profile(id,ranking)
-    if profile is []:
+    if not profile:
         return jsonify({'message':'User does not exist'},404)
     return jsonify({'message':'sucess'},200)
 
 @profile_views.route('/profile/popular', methods=['GET'])
 def view_top_ten():
-    return jsonify({"popular":get_top_ten()},200)
+    profiles = get_top_ten()
+    profiles = [profile.toJSON() for profile in profiles]
+    return jsonify({"profiles":profiles},200)
+
+@profile_views.route('/profile/explore', methods=['GET'])
+@jwt_required()
+def explore_profiles():
+    profiles = browse_viewable_profiles()
+
+    if not profiles:
+        return jsonify({'Message': 'No profiles available at this time. Come back later.'})
+    profiles = [profile.toJSON() for profile in profiles]
+    return jsonify({"profiles":profiles},200)

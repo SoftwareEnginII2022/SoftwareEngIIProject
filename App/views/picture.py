@@ -2,25 +2,25 @@ from flask import Blueprint, jsonify, request
 from flask_jwt import jwt_required, current_identity
 
 from App.controllers import (
- upload_Picture,
- get_Picture,
- likePicture
+ upload_picture,
+ get_picture,
+ like_picture
 )
 
 picture_views = Blueprint('picture_views',__name__,template_folder='../templates')
 
 @picture_views.route('/picture/view/<int:id>', methods=['GET'])
 def retrieve_picture(id):
-    picture = get_Picture(id)
+    picture = get_picture(id)
     if not picture:
-        return jsonify({'Message':'Image not found'},404)
+        return jsonify({'Message':'Picture was not found'},404)
     return picture.toJSON()
 
 @picture_views.route('/picture/like/<int:id>', methods=['POST'])
 @jwt_required()
 def like_picture(id):
-    picture = like_Picture(id,current_identity.id)
-    if picture is []:
+    picture = like_picture(id,current_identity.id)
+    if not picture:
         return jsonify({"Message":"Picture was not found "},404)
     return jsonify({'picture': picture.toJSON()},200)
     
@@ -28,10 +28,10 @@ def like_picture(id):
 @jwt_required()
 def upload_picture():
     profile_id = request.json.get('profile_id')
-    url = request.json.get('url')
-    picture = upload_Picture(user_id = 1,profile_id =1, url = url, likes= 0, dislikes= 0)
+    picture_url = request.json.get('picture_url')
+    picture = upload_picture(user_id = current_identity.id,profile_id =profile_id, url = picture_url)
 
-    if picture is []:
+    if not picture:
         return jsonify({'Message':'An error has occured'}, 400)
     return jsonify({'picture':picture.toJSON()}, 201)
 
