@@ -4,7 +4,7 @@ from flask_jwt import jwt_required,current_identity
 from  App.controllers import (
     get_profile,
     rate_profile,
-    getTopTen
+    get_top_ten
 )
 profile_views = Blueprint('profile_views', __name__, template_folder='../template' )
 
@@ -15,7 +15,7 @@ def view_profile(id):
         return jsonify({'Message':'User does not exist'},404)
     return jsonify({'user':user.toJSON()}, 200)
 
-@profile_views.route('/profile/<id>/rate',methods=['POST'])
+@profile_views.route('/profile/rate/<id>',methods=['POST'])
 @jwt_required()
 def rank_profile(id):
     ranking = request.json.get('ranking')
@@ -25,5 +25,5 @@ def rank_profile(id):
     return jsonify({'message':'sucess'},200)
 
 @profile_views.route('/profile/popular', methods=['GET'])
-def viewTopTen():
-    return jsonify({"popular":getTopTen()},200)
+def view_top_ten():
+    return jsonify({"popular":get_top_ten()},200)

@@ -16,7 +16,7 @@ def retrieve_picture(id):
         return jsonify({'Message':'Image not found'},404)
     return picture.toJSON()
 
-@picture_views.route('/picture/view/<int:id>/like', methods=['POST'])
+@picture_views.route('/picture/like/<int:id>', methods=['POST'])
 @jwt_required()
 def like_picture(id):
     picture = like_Picture(id,current_identity.id)

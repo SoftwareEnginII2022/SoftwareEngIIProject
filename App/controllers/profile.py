@@ -28,7 +28,7 @@ def get_profile_JSON(id):
         return []
     return profile.toJSON()
 
-def getTopTen():
+def get_top_ten():
     profiles = Profile.query.order_by(Profile.rating.desc()).limit(10)
     if not profiles:
         return []
