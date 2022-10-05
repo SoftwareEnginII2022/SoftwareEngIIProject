@@ -1,8 +1,8 @@
 from App.models import Profile
-from SQLAlchemy.exc import SQAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 from App.database import db
 
-def get_all profiles():
+def get_all_profiles():
     profiles = Profile.query.all()
     if not profiles:
         return []
@@ -13,17 +13,17 @@ def get_all_profiles_JSON():
     if not profiles:
         return []
     profiles = [profile.toJSON() for profile in profiles]
-    return profilesprofilesprofiles
+    return profiles
 
 def get_profile(id):
     profile = Profile.query.filter_by(id = id).first()
     if not profile:
         return []
     return profile
- 
- def get_profile_JSON(id):
+
+def get_profile_JSON(id):
     profile = get_profile(id)
-     if not profile:
+    if not profile:
         return []
     return profile.toJSON()
 

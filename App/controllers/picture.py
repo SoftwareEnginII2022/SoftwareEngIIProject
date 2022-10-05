@@ -9,6 +9,8 @@ def upload_Picture(user_id, profile_id, url, likes, dislikes, tierPoints):
 
 def get_Picture(id):
     picture = Picture.query.filter_by(id=id).first()
+    if not picture:
+        return []
     return picture
 
 def likePicture(picture_id, user_id):
