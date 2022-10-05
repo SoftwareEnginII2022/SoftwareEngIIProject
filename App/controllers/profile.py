@@ -74,7 +74,7 @@ def browse_viewable_profiles():
     '''
 
     # 1
-    profiles = Profile.query.order_by(func.rand())
+    profiles = Profile.query.order_by(func.random())
 
     # 2
     counter = 0
@@ -82,10 +82,12 @@ def browse_viewable_profiles():
     result = []
 
     for profile in profiles:
-        first_viewed_delta = date.today() - profile.first_view_date
-        if first_viewed_delta >= 1:            
+        now = date.today()
+        first_viewed_delta = now - profile.first_view_date
+        if first_viewed_delta.days >= 1:            
             try:
                 profile.view_count = 1
+                profile.first_view_date = now
                 result.append(profile)
                 counter = counter + 1
                 db.session.add(profile)
@@ -93,7 +95,7 @@ def browse_viewable_profiles():
             except sqlalchemy.exc.SQLAlchemyError:
                 db.session.rollback()
         else:
-            if profile.view_count <= tiers_max_views[profile.tier]:  
+            if profile.view_count < tiers_max_views[profile.tier]:  
                 try:
                     profile.view_count = profile.view_count + 1
                     result.append(profile)
