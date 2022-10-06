@@ -13,8 +13,8 @@ profile_views = Blueprint('profile_views', __name__, template_folder='../templat
 def view_profile(id):
     user = get_profile(id)
     if not user:
-        return jsonify({'Message':'User does not exist'},404)
-    return jsonify({'user':user.toJSON()}, 200)
+        return jsonify({'Message':'User does not exist'}), 404
+    return jsonify({'user':user.toJSON()}), 200
 
 @profile_views.route('/profile/rate/<id>',methods=['POST'])
 @jwt_required()
@@ -22,16 +22,16 @@ def rank_profile(id):
     ranking = request.json.get('ranking')
     profile = rate_profile(id,ranking)
     if not profile:
-        return jsonify({'message':'User does not exist'},404)
-    return jsonify({'message':'sucess'},200)
+        return jsonify({'message':'User does not exist'}), 404
+    return jsonify({'message':'sucess'}), 200
 
 @profile_views.route('/profile/popular', methods=['GET'])
 def view_top_ten():
     profiles = get_top_ten()
     if not profiles:
-        return jsonify({'Message': 'No popular profiles available. Rate some today!'})
+        return jsonify({'Message': 'No popular profiles available. Rate some today!'}), 200
     profiles = [profile.toJSON() for profile in profiles]
-    return jsonify({"profiles":profiles},200)
+    return jsonify({"profiles":profiles}), 200
 
 @profile_views.route('/profile/explore', methods=['GET'])
 @jwt_required()
@@ -39,6 +39,6 @@ def explore_profiles():
     profiles = browse_viewable_profiles()
 
     if not profiles:
-        return jsonify({'Message': 'No profiles available at this time. Come back later.'})
+        return jsonify({'Message': 'No profiles available at this time. Come back later.'}), 200
     profiles = [profile.toJSON() for profile in profiles]
-    return jsonify({"profiles":profiles},200)
+    return jsonify({"profiles":profiles}), 200

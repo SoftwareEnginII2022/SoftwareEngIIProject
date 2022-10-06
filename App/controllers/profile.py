@@ -1,8 +1,8 @@
-from App.models import Profile
 import sqlalchemy 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql.expression import func
 from App.database import db
+from App.models import Profile
 from datetime import date
 
 def get_all_profiles():
@@ -31,7 +31,8 @@ def get_profile_JSON(id):
     return profile.toJSON()
 
 def get_top_ten():
-    profiles = Profile.query.order_by(Profile.rating.desc()).limit(10)
+    profiles = [profile for profile in Profile.query.filter(Profile.rating > 0).order_by(Profile.rating.desc()).limit(10)]
+
     if not profiles:
         return []
     return profiles

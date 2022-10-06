@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory
 from flask_jwt import jwt_required
 
-
 from App.controllers import (
     create_user, 
     create_profile,
@@ -28,13 +27,15 @@ def signup():
     password = request.json.get('password')
     first_name= request.json.get ('first_name')
     last_name = request.json.get ('last_name')
+    picture_url = request.json.get ('picture_url')
 
     user = create_user(username, password,first_name,last_name)
 
     if not user:
-        return jsonify({'message': 'An error has occurred or user already exist'},400)
+        return jsonify({'message': 'An error has occurred or user already exist'}), 400
     profile = create_profile(user.id)
-    return ({'Message':'user created'}, 201)
+    upload_picture(user.id, profile.id, picture_url)
+    return jsonify({'Message':'user created'}), 201
 
 @user_views.route('/static/users')
 def static_user_page():
