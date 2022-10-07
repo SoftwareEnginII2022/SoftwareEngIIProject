@@ -6,6 +6,7 @@ from App.controllers import (
     create_profile,
     get_all_users,
     get_all_users_json,
+    upload_picture
 )
 
 user_views = Blueprint('user_views', __name__, template_folder='../templates')
@@ -35,7 +36,7 @@ def signup():
         return jsonify({'message': 'An error has occurred or user already exist'}), 400
     profile = create_profile(user.id)
     upload_picture(user.id, profile.id, picture_url)
-    return jsonify({'Message':'user created'}), 201
+    return jsonify({'Message':'user created', 'user': user.toJSON()}), 201
 
 @user_views.route('/static/users')
 def static_user_page():
