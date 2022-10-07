@@ -23,7 +23,6 @@ class User(db.Model):
             'username': self.username,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'pictures': [p.toJSON() for p in self.Picture],
             'profile': [p.toJSON() for p in self.Profile]
         }
 
