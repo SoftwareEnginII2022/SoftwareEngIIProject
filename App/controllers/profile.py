@@ -64,6 +64,7 @@ def rate_profile(profile_id, user_id, rating):
         profile.rating = profile.rating + rating
         db.session.add(profile)
         db.session.commit()
+        increase_tier_points(user_id)
         return profile
     except sqlalchemy.exc.SQLAlchemyError:
         db.session.rollback()

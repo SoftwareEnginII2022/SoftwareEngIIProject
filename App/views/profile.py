@@ -21,7 +21,7 @@ def view_profile(id):
 @jwt_required()
 def rank_profile(id):
     ranking = request.json.get('ranking')
-    if ranking > 5 and ranking < 0:
+    if ranking > 5 or ranking < 0:
         return jsonify({'Message': 'Invalid ranking'}), 400
     profile = rate_profile(id,current_identity.id,ranking)
     if not profile:
