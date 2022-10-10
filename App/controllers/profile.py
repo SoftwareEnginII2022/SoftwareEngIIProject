@@ -58,6 +58,7 @@ def rate_profile(profile_id, user_id, rating):
 
     if rating_detail:
        rating =  rating - rating_detail.rating
+       rating_detail = rating_detail.rating + rating
     else:
         create_rating_details(user_id,profile_id,rating)
     try:

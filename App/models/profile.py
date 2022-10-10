@@ -6,7 +6,7 @@ class Profile(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     rating = db.Column(db.Integer, nullable = False, default= 0)
     tier = db.Column(db.Integer,nullable= False, default= 0)
-    view_count = db.Column(db.Integer,nullable= False, default= 0)
+    daily_views = db.Column(db.Integer,nullable= False, default= 0)
     first_view_date = db.Column(db.Date, nullable= False, default= date(1970,1,1))
     Picture = db.relationship('Picture', backref='profile', lazy=True, cascade="all, delete-orphan")
     
@@ -22,7 +22,7 @@ class Profile(db.Model):
             'user_id': self.user_id,
             'rating': self.rating,
             'tier':self.get_tier(),
-            'view_count':self.view_count,
+            'daily_views':self.daily_views,
             'first_view_date':self.first_view_date,
             'Pictures': [p.toJSON() for p in self.Picture]
         } 
