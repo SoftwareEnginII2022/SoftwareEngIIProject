@@ -3,7 +3,14 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql.expression import func
 from App.database import db
 from App.models import Profile
+from App.controllers.rating_details import (
+    get_rating_detail,
+    create_rating_details
+    )
 from datetime import date
+
+tier_points = 5
+max_tier_points = 399
 
 def get_all_profiles():
     profiles = Profile.query.all()
@@ -43,10 +50,16 @@ def create_profile(user_id):
     db.session.commit()
     return profile
     
-def rate_profile(profile_id, rating):
+def rate_profile(profile_id, user_id, rating):
     profile = get_profile(profile_id)
     if not profile:
         return []
+    rating_detail = get_rating_detail(user_id,profile_id)
+
+    if rating_detail:
+       rating =  rating - rating_detail.rating
+    else:
+        create_rating_details(user_id,profile_id,rating)
     try:
         profile.rating = profile.rating + rating
         db.session.add(profile)
@@ -56,7 +69,25 @@ def rate_profile(profile_id, rating):
         db.session.rollback()
         return []
 
+def increase_tier_points(profile_id):
+    profile = get_profile(profile_id)
+    if not profile:
+        return []
+    if profile.tier == max_tier_points:
+        return []
+    try:
+        profile.tier = profile.tier + tier_points
+        if profile.tier >= max_tier_points:
+            profile.tier = max_tier_points
+        db.session.add(profile)
+        db.session.commit()
+        return profile
+    except sqlalchemy.exc.SQLAlchemyError:
+        db.session.rollback()
+        return []
+
 tiers_max_views = (7, 14, 21, 28)
+
 
 def browse_viewable_profiles():
     '''
@@ -96,7 +127,7 @@ def browse_viewable_profiles():
             except sqlalchemy.exc.SQLAlchemyError:
                 db.session.rollback()
         else:
-            if profile.view_count < tiers_max_views[profile.tier]:  
+            if profile.view_count < tiers_max_views[int(profile.tier/100)]:  
                 try:
                     profile.view_count = profile.view_count + 1
                     result.append(profile)

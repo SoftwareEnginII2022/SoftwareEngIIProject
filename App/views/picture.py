@@ -4,7 +4,8 @@ from flask_jwt import jwt_required, current_identity
 from App.controllers import (
  upload_picture,
  get_picture,
- like_picture
+ like_picture,
+ dislike_picture,
 )
 
 picture_views = Blueprint('picture_views',__name__,template_folder='../templates')
@@ -20,6 +21,14 @@ def retrieve_picture(id):
 @jwt_required()
 def like_picture_action(id):
     picture = like_picture(id,current_identity.id)
+    if not picture:
+        return jsonify({"Message":"Picture was not found "}),404
+    return jsonify({'picture': picture.toJSON()}),200
+
+@picture_views.route('/picture/dislike/<int:id>', methods=['POST'])
+@jwt_required()
+def dislike_picture_action(id):
+    picture = dislike_picture(id,current_identity.id)
     if not picture:
         return jsonify({"Message":"Picture was not found "}),404
     return jsonify({'picture': picture.toJSON()}),200

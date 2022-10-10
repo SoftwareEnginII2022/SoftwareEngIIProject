@@ -12,9 +12,11 @@ class Picture_Details(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('user.id'), nullable= False)
     status = db.Column (db.Enum(Status), nullable = False)
 
-    def __init__(self,picture_id, user_id):
+    def __init__(self,picture_id, user_id,status):
         self.picture_id = picture_id
         self.user_id = user_id
+        if status in Status.__members__:
+            self.status = status
 
     def like(self):
         self.status = Status.Like

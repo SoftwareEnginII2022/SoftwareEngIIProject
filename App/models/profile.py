@@ -14,7 +14,7 @@ class Profile(db.Model):
         self.user_id = user_id
     
     def get_tier(self):
-        return ("Bronze", "Gold", "Platinum", "Diamond")[self.tier]
+        return ("Bronze", "Gold", "Platinum", "Diamond")[int(self.tier/100)]
 
     def toJSON(self):
         return {

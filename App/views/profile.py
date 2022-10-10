@@ -7,6 +7,7 @@ from  App.controllers import (
     get_top_ten,
     browse_viewable_profiles
 )
+
 profile_views = Blueprint('profile_views', __name__, template_folder='../template' )
 
 @profile_views.route('/profile/view/<id>',methods=['GET'])
@@ -20,7 +21,9 @@ def view_profile(id):
 @jwt_required()
 def rank_profile(id):
     ranking = request.json.get('ranking')
-    profile = rate_profile(id,ranking)
+    if ranking > 5 and ranking < 0:
+        return jsonify({'Message': 'Invalid ranking'}), 400
+    profile = rate_profile(id,current_identity.id,ranking)
     if not profile:
         return jsonify({'message':'User does not exist'}), 404
     return jsonify({'message':'sucess'}), 200
