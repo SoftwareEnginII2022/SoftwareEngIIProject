@@ -22,6 +22,7 @@ class Profile(db.Model):
             'user_id': self.user_id,
             'rating': self.rating,
             'tier':self.get_tier(),
+            "tier_points": self.tier,
             'daily_views':self.daily_views,
             'first_view_date':self.first_view_date,
             'Pictures': [p.toJSON() for p in self.Picture]

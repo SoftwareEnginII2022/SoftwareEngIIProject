@@ -103,7 +103,7 @@ def browse_viewable_profiles():
         if view_date > 24hrs:
             choose it and view count = 1;
         else
-            if view_count <= max_view_tier:
+            if daily_views <= max_view_tier:
                 choose it and view count += 1;
     '''
 
@@ -120,7 +120,7 @@ def browse_viewable_profiles():
         first_viewed_delta = now - profile.first_view_date
         if first_viewed_delta.days >= 1:            
             try:
-                profile.view_count = 1
+                profile.daily_views = 1
                 profile.first_view_date = now
                 result.append(profile)
                 counter = counter + 1
@@ -129,9 +129,9 @@ def browse_viewable_profiles():
             except sqlalchemy.exc.SQLAlchemyError:
                 db.session.rollback()
         else:
-            if profile.view_count < tiers_max_views[int(profile.tier/100)]:  
+            if profile.daily_views < tiers_max_views[int(profile.tier/100)]:  
                 try:
-                    profile.view_count = profile.view_count + 1
+                    profile.daily_views = profile.daily_views + 1
                     result.append(profile)
                     counter = counter + 1
                     db.session.add(profile)
