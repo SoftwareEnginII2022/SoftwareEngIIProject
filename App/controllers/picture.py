@@ -37,7 +37,7 @@ def like_picture(picture_id, user_id):
 def dislike_picture(picture_id, user_id):
     picture = get_picture(picture_id)
     if not picture: 
-        return[]
+        return []
     pic_details = Picture_Details.query.filter_by(picture_id=picture_id, user_id=user_id).first()
     if pic_details:
         if pic_details.status.name == "Like":
