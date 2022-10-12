@@ -36,7 +36,6 @@ def dislike_picture_action(id):
 @picture_views.route('/picture/upload', methods=['POST'])
 @jwt_required()
 def upload_picture_action():
-    profile_id = request.json.get('profile_id')
     picture_url = request.json.get('picture_url')
     picture = upload_picture(user_id = current_identity.id, profile_id =current_identity.id, url = picture_url)
 

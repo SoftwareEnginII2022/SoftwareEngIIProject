@@ -88,7 +88,12 @@ def increase_tier_points(profile_id):
         db.session.rollback()
         return []
 
-tiers_max_views = (7, 14, 21, 28)
+tiers_max_views = dict(
+    Bronze = 7,
+    Gold = 14,
+    Platinum = 21,
+    Diamond = 28
+)
 
 
 def browse_viewable_profiles():
@@ -129,7 +134,7 @@ def browse_viewable_profiles():
             except sqlalchemy.exc.SQLAlchemyError:
                 db.session.rollback()
         else:
-            if profile.daily_views < tiers_max_views[int(profile.tier/100)]:  
+            if profile.daily_views < tiers_max_views.get(profile.get_tier()):  
                 try:
                     profile.daily_views = profile.daily_views + 1
                     result.append(profile)
