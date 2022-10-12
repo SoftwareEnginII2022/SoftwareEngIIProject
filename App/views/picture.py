@@ -24,7 +24,7 @@ def like_picture_action(id):
     if not picture:
         return jsonify({"Message":"Picture was not found "}),404
     return jsonify({'picture': picture.toJSON()}),200
-
+ 
 @picture_views.route('/picture/dislike/<int:id>', methods=['POST'])
 @jwt_required()
 def dislike_picture_action(id):
