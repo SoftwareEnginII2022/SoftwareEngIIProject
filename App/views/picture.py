@@ -14,7 +14,7 @@ picture_views = Blueprint('picture_views',__name__,template_folder='../templates
 def retrieve_picture(id):
     picture = get_picture(id)
     if not picture:
-        return jsonify({'Message':'Picture was not found'}),404
+        return jsonify({'message':'Picture was not found'}),404
     return picture.toJSON()
 
 @picture_views.route('/picture/like/<int:id>', methods=['POST'])
@@ -22,7 +22,7 @@ def retrieve_picture(id):
 def like_picture_action(id):
     picture = like_picture(id,current_identity.id)
     if not picture:
-        return jsonify({"Message":"Picture was not found "}),404
+        return jsonify({"Message":"Picture was not found"}),404
     return jsonify({'picture': picture.toJSON()}),200
  
 @picture_views.route('/picture/dislike/<int:id>', methods=['POST'])
@@ -30,7 +30,7 @@ def like_picture_action(id):
 def dislike_picture_action(id):
     picture = dislike_picture(id,current_identity.id)
     if not picture:
-        return jsonify({"Message":"Picture was not found "}),404
+        return jsonify({"Message":"Picture was not found"}),404
     return jsonify({'picture': picture.toJSON()}),200
     
 @picture_views.route('/picture/upload', methods=['POST'])
@@ -40,7 +40,7 @@ def upload_picture_action():
     picture = upload_picture(user_id = current_identity.id, profile_id =current_identity.id, url = picture_url)
 
     if not picture:
-        return jsonify({'Message':'An error has occured'}), 400
+        return jsonify({'message':'An error has occured'}), 400
     return jsonify({'picture':picture.toJSON()}), 201
 
 

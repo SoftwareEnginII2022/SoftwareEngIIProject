@@ -36,7 +36,7 @@ def signup():
         return jsonify({'message': 'An error has occurred or user already exist'}), 400
     profile = create_profile(user.id)
     upload_picture(user.id, profile.id, picture_url)
-    return jsonify({'Message':'user created', 'user': user.toJSON()}), 201
+    return jsonify({'message':'User created', 'user': user.toJSON()}), 201
 
 @user_views.route('/static/users')
 def static_user_page():

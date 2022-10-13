@@ -10,29 +10,29 @@ from  App.controllers import (
 
 profile_views = Blueprint('profile_views', __name__, template_folder='../template' )
 
-@profile_views.route('/profile/view/<id>',methods=['GET'])
+@profile_views.route('/profile/view/<int:id>',methods=['GET'])
 def view_profile(id):
-    user = get_profile(id)
-    if not user:
-        return jsonify({'Message':'User does not exist'}), 404
-    return jsonify({'user':user.toJSON()}), 200
+    profile = get_profile(id)
+    if not profile:
+        return jsonify({'message':'Profile does not exist'}), 404
+    return jsonify({'profile':profile.toJSON()}), 200
 
-@profile_views.route('/profile/rate/<id>',methods=['POST'])
+@profile_views.route('/profile/rate/<int:id>',methods=['POST'])
 @jwt_required()
 def rank_profile(id):
     ranking = request.json.get('ranking')
     if ranking > 5 or ranking < 0:
-        return jsonify({'Message': 'Invalid ranking'}), 400
+        return jsonify({'message': 'Invalid ranking'}), 400
     profile = rate_profile(id,current_identity.id,ranking)
     if not profile:
-        return jsonify({'message':'User does not exist'}), 404
-    return jsonify({'message':'sucess'}), 200
+        return jsonify({'message':'Profile does not exist'}), 404
+    return jsonify({'message':'success'}), 200
 
 @profile_views.route('/profile/popular', methods=['GET'])
 def view_top_ten():
     profiles = get_top_ten()
     if not profiles:
-        return jsonify({'Message': 'No popular profiles available. Rate some today!'}), 200
+        return jsonify({'message': 'No popular profiles available. Rate some today!'}), 200
     profiles = [profile.toJSON() for profile in profiles]
     return jsonify({"profiles":profiles}), 200
 
@@ -42,6 +42,6 @@ def explore_profiles():
     profiles = browse_viewable_profiles()
 
     if not profiles:
-        return jsonify({'Message': 'No profiles available at this time. Come back later.'}), 200
+        return jsonify({'message': 'No profiles available at this time. Come back later.'}), 200
     profiles = [profile.toJSON() for profile in profiles]
     return jsonify({"profiles":profiles}), 200
