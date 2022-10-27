@@ -3,6 +3,7 @@ from flask_jwt import jwt_required,current_identity
 
 from  App.controllers import (
     get_profile,
+    get_profile_by_username,
     rate_profile,
     get_top_ten,
     browse_viewable_profiles
@@ -10,9 +11,16 @@ from  App.controllers import (
 
 profile_views = Blueprint('profile_views', __name__, template_folder='../template' )
 
-@profile_views.route('/profile/view/<int:id>',methods=['GET'])
-def view_profile(id):
-    profile = get_profile(id)
+# @profile_views.route('/profile/view/<int:id>',methods=['GET'])
+# def view_profile(id):
+#     profile = get_profile(id)
+#     if not profile:
+#         return jsonify({'message':'Profile does not exist'}), 404
+#     return jsonify({'profile':profile.toJSON()}), 200
+
+@profile_views.route('/profile/view/<string:username>',methods=['GET'])
+def view_profile(username):
+    profile = get_profile_by_username(username)
     if not profile:
         return jsonify({'message':'Profile does not exist'}), 404
     return jsonify({'profile':profile.toJSON()}), 200

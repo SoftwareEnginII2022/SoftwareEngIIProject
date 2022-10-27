@@ -2,7 +2,7 @@ import sqlalchemy
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql.expression import func
 from App.database import db
-from App.models import Profile
+from App.models import Profile, User
 from App.controllers.rating_details import (
     get_rating_detail,
     create_rating_details
@@ -29,6 +29,18 @@ def get_profile(id):
     profile = Profile.query.filter_by(id = id).first()
     if not profile:
         return []
+    return profile
+
+def get_profile_by_username(username):
+    user = User.query.filter_by(username = username).first()
+    if not user:
+        return []
+    
+    profile = user.Profile
+
+    if not profile:
+        return []
+    
     return profile
 
 def get_profile_JSON(id):

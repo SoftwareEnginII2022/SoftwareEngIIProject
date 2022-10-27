@@ -15,7 +15,7 @@ def retrieve_picture(id):
     picture = get_picture(id)
     if not picture:
         return jsonify({'message':'Picture was not found'}),404
-    return picture.toJSON()
+    return jsonify({'picture': picture.toJSON()}), 200
 
 @picture_views.route('/picture/like/<int:id>', methods=['POST'])
 @jwt_required()
@@ -23,7 +23,7 @@ def like_picture_action(id):
     picture = like_picture(id,current_identity.id)
     if not picture:
         return jsonify({"Message":"Picture was not found"}),404
-    return jsonify({'picture': picture.toJSON()}),200
+    return jsonify({'picture': picture.toJSON()}), 200
  
 @picture_views.route('/picture/dislike/<int:id>', methods=['POST'])
 @jwt_required()
@@ -31,7 +31,7 @@ def dislike_picture_action(id):
     picture = dislike_picture(id,current_identity.id)
     if not picture:
         return jsonify({"Message":"Picture was not found"}),404
-    return jsonify({'picture': picture.toJSON()}),200
+    return jsonify({'picture': picture.toJSON()}), 200
     
 @picture_views.route('/picture/upload', methods=['POST'])
 @jwt_required()
