@@ -108,7 +108,7 @@ tiers_max_views = dict(
 )
 
 
-def browse_viewable_profiles():
+def get_explore_profiles():
     '''
     step 1:
         obtain randomized columns from database

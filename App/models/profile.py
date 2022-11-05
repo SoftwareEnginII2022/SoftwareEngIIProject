@@ -14,8 +14,7 @@ class Profile(db.Model):
         self.user_id = user_id
         self.rating = 0
         self.tier = 0
-        self.daily_views =0
-
+        self.daily_views = 0
     
     def get_tier(self):
         return ("Bronze", "Gold", "Platinum", "Diamond")[int(self.tier/100)]

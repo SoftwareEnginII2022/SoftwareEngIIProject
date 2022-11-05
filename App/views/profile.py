@@ -6,7 +6,7 @@ from  App.controllers import (
     get_profile_by_username,
     rate_profile,
     get_top_ten,
-    browse_viewable_profiles
+    get_explore_profiles
 )
 
 profile_views = Blueprint('profile_views', __name__, template_folder='../template' )
@@ -47,7 +47,7 @@ def view_top_ten():
 @profile_views.route('/profile/explore', methods=['GET'])
 @jwt_required()
 def explore_profiles():
-    profiles = browse_viewable_profiles()
+    profiles = get_explore_profiles()
 
     if not profiles:
         return jsonify({'message': 'No profiles available at this time. Come back later.'}), 200
