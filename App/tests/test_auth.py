@@ -15,13 +15,13 @@ class AuthIntegrationTests(unittest.TestCase):
 
      @pytest.fixture(autouse=True, scope="class")
      def empty_db(self):
-         app.config.update({'TESTING': True, 'SQLALCHEMY_DATABASE_URI': 'sqlite:///test2.db'})
+         app.config.update({'TESTING': True, 'SQLALCHEMY_DATABASE_URI': 'sqlite:///test.db'})
          create_db(app)
          yield app.test_client()
-         os.unlink(os.getcwd()+'/App/test2.db')
+         os.unlink(os.getcwd()+'/App/test.db')
 
 
      def test_authenticate(self):
-         user = create_user("bob", "bobpass","bob","bobbert")
-         assert authenticate("bob", "bobpass","bob","bobbert") != None
+         user = create_user("bob", "pass", "Bob","Marley")
+         assert authenticate("bob", "pass") != None
 

@@ -12,35 +12,35 @@ from App.controllers import (
     rate_profile,
     get_profile,
     get_top_ten,
-    get_all_profiles_JSON,
+    get_all_profiles,
 )
 
 from wsgi import app
 
 LOGGER = logging.getLogger(__name__)
 
-class ProfileUnitTest(unittest.TestCase):
+class ProfileUnitTests(unittest.TestCase):
     def test_new_profile(self):
-        user = User("bob", "bobpass","bob","bobbert")
+        user = User("bob", "pass", "Bob","Marley")
         user.Profile = Profile(user.id)
-        assert (
-            user.Profile.user_id == None and user.Profile.rating == 0
-            and user.Profile.tier == 0 and user.Profile.daily_views == 0
-        )
+        assert user.Profile.user_id == None
+        assert user.Profile.rating == 0
+        assert user.Profile.tier == 0
+        assert user.Profile.daily_views == 0
 
     def test_profile_toJSON(self):
-        user = User("bob", "bobpass","bob","bobbert")
+        user = User("bob", "pass", "Bob","Marley")
         user.Profile = Profile(user.id)
         profile_json = user.Profile.toJSON()
         expected_json = {
-                'daily_views':0,
-                'id': None,
-                'pictures':[],
-                'rating':0,
-                'tier':'Bronze',
-                'tier_points': 0,
-                'user_id':None
-            }
+            'id': None,
+            'user_id':None,
+            'rating':0,
+            'tier':'Bronze',
+            'tier_points': 0,
+            'daily_views':0,
+            'pictures':[]
+        }
         self.assertDictEqual(profile_json, expected_json)
     
     
@@ -53,26 +53,22 @@ class ProfileIntegrationTests(unittest.TestCase):
         os.unlink(os.getcwd()+'/App/test.db')
   
     def test_create_profile(self):
-        user = create_user("bob", "bobpass","bob","bobbert")
+        user = create_user("bob", "pass","Bob","Marley")
         profile = create_profile(user.id)
-        assert profile.user_id == 1 and profile.rating == 0 and profile.tier == 0 
+        view_profile = get_profile(profile.id)
+        assert profile.user_id == view_profile.user_id
+        assert profile.rating == view_profile.rating
+        assert profile.tier == view_profile.tier
+        assert profile.daily_views == view_profile.daily_views
+        assert view_profile.user_id == user.id
         
-    def test_display_view_profile(self):
-        user = create_user("rick", "rickpass","rick","ricardo")
+    def test_fetching_profiles(self):
+        user = create_user("rick", "rickpass","Rick","Ricardo")
         profile = create_profile(user.id)
-        view_profile = get_profile(user.id)
-        self.assertDictEqual({'id':2, 'user_id':2, 'rating':0,'tier':'Bronze','tier_points':0,'daily_views':0,'pictures':[] },view_profile.toJSON())
 
-    def test_rank_profile(self):
-        user = create_user("amit", "amitpass","amit","amit")
-        profile = create_profile(user.id)
-        rating = rate_profile(profile.id,user.id,5)
-        view_profile = get_profile(user.id)
-        assert view_profile.rating == 5
-        
-    def test_exploring_profiles(self):
-        explore_profile = get_all_profiles_JSON()
-        expected_list= [
+        profiles = get_all_profiles()
+        profiles = [profile.toJSON() for profile in profiles]
+        expected_list = [
             {
             'daily_views': 0,
             'id': 1,
@@ -90,39 +86,61 @@ class ProfileIntegrationTests(unittest.TestCase):
             'tier': 'Bronze',
             'tier_points': 0,
             'user_id': 2
-            }]
+            }
+        ]
 
-        self.assertListEqual(expected_list ,explore_profile)
+        self.assertListEqual(expected_list, profiles)
+        
+    def test_rank_profile(self):
+        user = create_user("steve", "stevepass","Steve","Stevenson")
+        profile = create_profile(user.id)
+        rating = rate_profile(profile.id, user.id, 5)
+        view_profile = get_profile(profile.id)
+        assert view_profile.rating == 5
 
-    def test_get_top_ten(self):
-        user = create_user("paul", "paulpass","paul","pauloole")
+    def test_retrieve_top_ten(self):
+        user = create_user("paul", "paulpass","Paul","Pauloole")
         profile = create_profile(user.id)
         top_ten = get_top_ten()
         top_ten = [p.toJSON() for p in top_ten]
-        expected_list = [{
+        expected_list = [
+            {
+            'daily_views': 0,
+            'id': 3,
+            'pictures': [],
+            'rating': 5,
+            'tier': 'Bronze',
+            'tier_points': 5,
+            'user_id': 3
+            },
+            {
             'daily_views': 0,
             'id': 1,
             'pictures': [],
             'rating': 0,
             'tier': 'Bronze',
             'tier_points': 0,
-            'user_id': 1},
-        {
+            'user_id': 1
+            },
+            {
             'daily_views': 0,
             'id': 2,
             'pictures': [],
             'rating': 0,
             'tier': 'Bronze',
             'tier_points': 0,
-            'user_id': 2},
-        {
+            'user_id': 2
+            },
+            {
             'daily_views': 0,
-            'id': 3,
+            'id': 4,
             'pictures': [],
             'rating': 0,
             'tier': 'Bronze',
             'tier_points': 0,
-            'user_id': 3}]
+            'user_id': 4
+            }
+        ]
             
-        self.assertListEqual(expected_list ,top_ten)
+        self.assertListEqual(expected_list, top_ten)
     

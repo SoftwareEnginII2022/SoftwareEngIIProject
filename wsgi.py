@@ -64,6 +64,14 @@ Test Commands
 
 test = AppGroup('test', help='Testing commands') 
 
+@test.command("auth", help="Run Auth tests")
+@click.argument("type", default="all")
+def user_tests_command(type):
+    if type == "int":
+        sys.exit(pytest.main(["-k", "AuthIntegrationTests"]))
+    else:
+        sys.exit(pytest.main(["-k", "Auth"]))
+
 @test.command("user", help="Run User tests")
 @click.argument("type", default="all")
 def user_tests_command(type):
@@ -74,7 +82,7 @@ def user_tests_command(type):
     else:
         sys.exit(pytest.main(["-k", "User"]))
 
-@test.command("profile", help="Run profile tests")
+@test.command("profile", help="Run Profile tests")
 @click.argument("type", default="all")
 def user_tests_command(type):
     if type == "unit":
@@ -84,7 +92,7 @@ def user_tests_command(type):
     else:
         sys.exit(pytest.main(["-k", "Profile"]))
 
-@test.command("picture", help="Run picture tests")
+@test.command("picture", help="Run Picture tests")
 @click.argument("type", default="all")
 def user_tests_command(type):
     if type == "unit":

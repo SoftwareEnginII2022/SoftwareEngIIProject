@@ -30,7 +30,7 @@ def signup():
     last_name = request.json.get ('last_name')
     picture_url = request.json.get ('picture_url')
 
-    user = create_user(username, password,first_name,last_name)
+    user = create_user(username, password, first_name, last_name)
 
     if not user:
         return jsonify({'message': 'An error has occurred or user already exist'}), 400

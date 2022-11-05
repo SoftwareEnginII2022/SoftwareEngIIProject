@@ -5,6 +5,7 @@ from App.main import create_app
 from App.database import create_db
 from App.models import User, Profile
 from App.controllers import (
+    get_user,
     create_user,
     create_profile,
     get_all_users_json,
@@ -22,39 +23,37 @@ LOGGER = logging.getLogger(__name__)
 class UserUnitTests(unittest.TestCase):
 
     def test_new_user(self):
-        user = User("bob", "bobpass","bob","bobbert")
-        assert user.username == "bob"
+        newuser = User("bob", "pass","Bob","Marley")
+        assert newuser.username == "bob"
+        assert newuser.first_name == "Bob"
+        assert newuser.last_name == "Marley"
 
     def test_toJSON(self):
-        user = User("bob", "bobpass","bob","bobbert")
+        user = User("bob", "pass","Bob","Marley")
         user.Profile = Profile(user.id)
         user_json = user.toJSON()
         expected_json = {
             'id':None, 
             'username':'bob',
-            'first_name':'bob', 
-            'last_name':'bobbert',
+            'first_name':'Bob', 
+            'last_name':'Marley',
             'profile':{
-                'daily_views':0,
                 'id': None,
-                'pictures':[],
+                'user_id':None,
                 'rating':0,
                 'tier':'Bronze',
                 'tier_points': 0,
-                'user_id':None
-            }}
+                'daily_views':0,
+                'pictures':[]
+            }
+        }
         self.assertDictEqual(user_json, expected_json)
     
     def test_hashed_password(self):
-        password = "mypass"
+        password = "pass"
         hashed = generate_password_hash(password, method='sha256')
-        user = User("bob", password,"bob","bobbert")
-        assert user.password != password
-
-    def test_check_password(self):
-        password = "mypass"
-        user = User("bob", password,"bob","bobbert")
-        assert user.check_password(password)
+        newuser = User("bob", password,"bob","bobbert")
+        assert newuser.password != password
 
 '''
     Integration Tests
@@ -74,14 +73,17 @@ class UserIntegrationTests(unittest.TestCase):
         os.unlink(os.getcwd()+'/App/test.db')
 
     def test_create_user(self):
-        user = create_user("bob", "bobpass","bob","bobbert")
+        user = create_user("bob", "pass","Bob","Marley")
         create_profile(user.id)
-        assert user.username == "bob"
+        view_user = get_user(user.id)
+        assert user.username == view_user.username
+        assert user.first_name == view_user.first_name
+        assert user.last_name == view_user.last_name
     
     def test_get_all_users_json(self):
-        user = create_user("rick", "rickpass","rick","ricarado")
+        user = create_user("rick", "rickpass","Rick","Ricarado")
         create_profile(user.id)
         users_json = get_all_users_json()
-        self.assertListEqual([{"id":1, "username":"bob","first_name":"bob", "last_name":"bobbert","profile":{'id':1, 'user_id':1, 'rating':0, 'tier':'Bronze', 'tier_points':0, 'daily_views':0,'pictures':[]}}, {"id":2, "username":"rick","first_name":"rick", "last_name":"ricarado","profile":{'id':2, 'user_id':2, 'rating':0, 'tier':'Bronze', 'tier_points':0, 'daily_views':0,'pictures':[]}}], users_json)
+        self.assertListEqual([{"id":1, "username":"bob","first_name":"Bob", "last_name":"Marley","profile":{'id':1, 'user_id':1, 'rating':0, 'tier':'Bronze', 'tier_points':0, 'daily_views':0,'pictures':[]}}, {"id":2, "username":"rick","first_name":"Rick", "last_name":"Ricarado","profile":{'id':2, 'user_id':2, 'rating':0, 'tier':'Bronze', 'tier_points':0, 'daily_views':0,'pictures':[]}}], users_json)
 
 

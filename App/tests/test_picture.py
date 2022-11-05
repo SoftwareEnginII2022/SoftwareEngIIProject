@@ -18,24 +18,26 @@ from wsgi import app
 
 LOGGER = logging.getLogger(__name__)
 
-class PictureUnitTest(unittest.TestCase):
+class PictureUnitTests(unittest.TestCase):
     def test_new_picture(self):
-        new_picture = Picture('1','1','https://i.imgur.com/YsItLyD.jpeg')
-        assert (
-            new_picture.user_id == 1 and new_picture.profile_id == 1 
-            and new_picture.url == 'https://i.imgur.com/YsItLyD.jpeg' 
-            and new_picture.likes == 0, new_picture.dislikes == 0 
-        )
+        new_picture = Picture(1, 1, 'https://i.imgur.com/YsItLyD.jpeg')
+        assert new_picture.user_id == 1
+        assert new_picture.profile_id == 1 
+        assert new_picture.url == 'https://i.imgur.com/YsItLyD.jpeg' 
+        assert new_picture.likes == 0
+        assert new_picture.dislikes == 0
+
+
     def test_picture_toJSON(self):
-       new_picture = Picture('1','1','https://i.imgur.com/YsItLyD.jpeg')
-       expected_json = {
-                'id': None,
-                'url':'https://i.imgur.com/YsItLyD.jpeg',
-                'dislikes':0,
-                'likes':0,
-                'profile_id': 1,
-                'user_id':1
-            }
+        new_picture = Picture(1, 1, 'https://i.imgur.com/YsItLyD.jpeg')
+        expected_json = {
+            'id': None,
+            'user_id':1,
+            'profile_id': 1,
+            'url': 'https://i.imgur.com/YsItLyD.jpeg',
+            'likes':0,
+            'dislikes':0
+        }
     
 class PictureIntegrationTests(unittest.TestCase):
     @pytest.fixture(autouse=True, scope="class")
@@ -45,28 +47,49 @@ class PictureIntegrationTests(unittest.TestCase):
         yield app.test_client()
         os.unlink(os.getcwd()+'/App/test.db')
 
-    def test_upload_picture(self):
-        user = create_user("rick", "rickpass","rick","ricardo")
+    def test_add_picture(self):
+        user = create_user("bob", "pass","Bob","Marley")
         profile = create_profile(user.id)
-        picture = upload_picture(user.id,profile.id,'https://i.imgur.com/YsItLyD.jpeg')
-        picture_json = picture.toJSON()
-        self.assertDictEqual({'id':3,'user_id':3, 'profile_id':3,'url':'https://i.imgur.com/YsItLyD.jpeg','likes': 0, 'dislikes': 0}, picture_json)
+        picture = upload_picture(user.id, profile.id, 'https://i.imgur.com/YsItLyD.jpeg')
+        view_picture = get_picture(picture.id)
+        picture_json = view_picture.toJSON()
+        expected_dict = {
+            'id': 1,
+            'user_id': 1,
+            'profile_id': 1,
+            'url':'https://i.imgur.com/YsItLyD.jpeg',
+            'likes': 0,
+            'dislikes': 0
+        }
 
-
-    def test_like_picture(self):
-        user = create_user("bob", "bobpass","bob","bobbert")
-        profile = create_profile(user.id)
-        picture = upload_picture(user.id,profile.id,'https://i.imgur.com/YsItLyD.jpeg')
-        picture = like_picture(picture.id, user.id)
-        picture_json = picture.toJSON()
-        self.assertDictEqual({'id':2,'user_id':2, 'profile_id':2,'url':'https://i.imgur.com/YsItLyD.jpeg', \
-        'likes': 1, 'dislikes': 0}, picture_json)
+        self.assertDictEqual(expected_dict, picture_json)
     
     def test_dislike_picture(self):
-        user = create_user("aaron", "aaronpass","aa","ron")
-        profile = create_profile(user.id)
-        picture = upload_picture(user.id,profile.id,'https://i.imgur.com/YsItLyD.jpeg')
-        picture = dislike_picture(picture.id, user.id)
-        picture_json = picture.toJSON()
-        self.assertDictEqual({'id':1,'user_id':1, 'profile_id':1,'url':'https://i.imgur.com/YsItLyD.jpeg', \
-        'likes': 0, 'dislikes': 1}, picture_json)
+        picture = dislike_picture(1, 1)
+        view_picture = get_picture(picture.id)
+        picture_json = view_picture.toJSON()
+        expected_dict = {
+            'id': 1,
+            'user_id': 1,
+            'profile_id': 1,
+            'url':'https://i.imgur.com/YsItLyD.jpeg',
+            'likes': 0,
+            'dislikes': 1
+        }
+
+        self.assertDictEqual(expected_dict, picture_json)
+
+    def test_like_picture(self):
+        picture = like_picture(1, 1)
+        view_picture = get_picture(picture.id)
+        picture_json = view_picture.toJSON()
+        expected_dict = {
+            'id': 1,
+            'user_id': 1,
+            'profile_id': 1,
+            'url':'https://i.imgur.com/YsItLyD.jpeg',
+            'likes': 1,
+            'dislikes': 0
+        }
+
+        self.assertDictEqual(expected_dict, picture_json)
