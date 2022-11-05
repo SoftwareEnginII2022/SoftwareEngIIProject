@@ -3,11 +3,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from App.main import create_app
 from App.database import create_db
-from App.models import User
+from App.models import User,Profile
 from App.controllers import (
     create_user,
+    create_profile,
     get_all_users_json,
-    profile
 )
 
 from wsgi import app
@@ -27,8 +27,23 @@ class UserUnitTests(unittest.TestCase):
 
     def test_toJSON(self):
         user = User("bob", "bobpass","bob","bobbert")
+        user.Profile = Profile(user.id)
         user_json = user.toJSON()
-        self.assertDictEqual(user_json, {"id":None, "username":"bob","first_name":"bob", "last_name":"bobbert","profile":[]})
+        expected_json = {
+            'id':None, 
+            'username':'bob',
+            'first_name':'bob', 
+            'last_name':'bobbert',
+            'profile':{
+                'daily_views':0,
+                'id': None,
+                'pictures':[],
+                'rating':0,
+                'tier':'Bronze',
+                'tier_points': 0,
+                'user_id':None
+            }}
+        self.assertDictEqual(user_json, expected_json)
     
     def test_hashed_password(self):
         password = "mypass"
@@ -60,11 +75,13 @@ class UserIntegrationTests(unittest.TestCase):
 
     def test_create_user(self):
         user = create_user("bob", "bobpass","bob","bobbert")
+        create_profile(user.id)
         assert user.username == "bob"
     
     def test_get_all_users_json(self):
-        create_user("rick", "rickpass","rick","ricarado")
+        user = create_user("rick", "rickpass","rick","ricarado")
+        create_profile(user.id)
         users_json = get_all_users_json()
-        self.assertListEqual([{"id":1, "username":"bob","first_name":"bob", "last_name":"bobbert","profile":[]}, {"id":2, "username":"rick","first_name":"rick", "last_name":"ricarado","profile":[]}], users_json)
+        self.assertListEqual([{"id":1, "username":"bob","first_name":"bob", "last_name":"bobbert","profile":{'id':1, 'user_id':1, 'rating':0, 'tier':'Bronze', 'tier_points':0, 'daily_views':0,'pictures':[]}}, {"id":2, "username":"rick","first_name":"rick", "last_name":"ricarado","profile":{'id':2, 'user_id':2, 'rating':0, 'tier':'Bronze', 'tier_points':0, 'daily_views':0,'pictures':[]}}], users_json)
 
 
